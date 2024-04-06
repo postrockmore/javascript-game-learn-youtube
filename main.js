@@ -7,7 +7,8 @@ import { Input } from "./src/Input.js";
 import { gridCells, } from "./src/helpers/grid.js";
 import { GameObject } from "./src/GameObject.js";
 import { Hero } from "./src/objects/Hero/Hero.js";
-
+import { Camera } from "./src/Camera.js";
+import { Rod } from "./src/objects/Rod/Rod.js";
 
 // Берем canvas на котором будем рисовать
 const canvas = document.querySelector('#game-canvas')
@@ -24,7 +25,6 @@ const skySprite = new Sprite({
     resource: resources.images.sky,
     frameSize: new Vector2(320, 180)
 })
-mainScene.addChild(skySprite)
 
 // Земля
 const groundSprite = new Sprite({
@@ -36,6 +36,13 @@ mainScene.addChild(groundSprite)
 // Герой
 const hero = new Hero(gridCells(6), gridCells(5))
 mainScene.addChild(hero)
+
+const rod = new Rod(gridCells(7), gridCells(6))
+mainScene.addChild(rod)
+
+// Камера
+const camera = new Camera()
+mainScene.addChild(camera)
 
 // Добавляем в главную сцену наш ввод
 mainScene.input = new Input()
@@ -52,7 +59,24 @@ const update = ( delta ) =>
 // И вызывается на столько быстро на сколько это возможно
 const draw = () =>
 {
+    // Очистка canvas от предыдещего кадра
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+    // Рисуем небо отдельно чтобы камера его не двигала
+    // Т.к. камера сдвигает всю сцену
+    skySprite.drawImage(ctx, 0, 0)
+
+    // Сохранение текущей позиции отображения
+    ctx.save()
+
+    // Смещение позиции отображения
+    ctx.translate(camera.position.x, camera.position.y)
+
+    // Рисуем главную сцену
     mainScene.draw(ctx, 0, 0)
+
+    // Восстанавливаем позицию отображения
+    ctx.restore()
 }
 
 // Игровой цикл воздействующий на функции update и draw

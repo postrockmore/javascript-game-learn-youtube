@@ -12,6 +12,7 @@ class Resources
             ground: "/sprites/ground.png",
             hero: "/sprites/hero-sheet.png",
             shadow: "/sprites/shadow.png",
+            rod: "/sprites/rod.png"
         }
 
         this.images = {}

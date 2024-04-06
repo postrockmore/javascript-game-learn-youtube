@@ -3,6 +3,7 @@
  *
  */
 import { Vector2 } from "./Vector2.js";
+import { events } from "./Events.js";
 
 export class GameObject
 {
@@ -12,6 +13,7 @@ export class GameObject
     {
         this.position = position || new Vector2(0, 0) // Позиция объекта в игре
         this.children = [] // Тут будут находится дочерние объекты
+        this.parent = null // Тут будет хранится родительский элемент
     }
 
     /* Метод шага который запускает такие же функции для всех дочерних объектов
@@ -55,13 +57,27 @@ export class GameObject
 
     }
 
+    // Метод уничтожения объекта
+    destroy()
+    {
+        if (this.children.length) {
+            this.children.forEach(child => child.destroy())
+        }
+
+        this.parent.removeChild(this)
+    }
+
     addChild(gameObject)
     {
+        gameObject.parent = this // Задачем дочернему объекту родителя в виде себя
+
         this.children.push(gameObject)
     }
 
     removeChild(gameObject)
     {
-        this.children = this.children.fillter(g => g !== gameObject)
+        events.unsubscribe(gameObject)
+
+        this.children = this.children.filter(g => g !== gameObject)
     }
 }

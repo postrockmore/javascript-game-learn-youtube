@@ -8,6 +8,7 @@ import { resources } from "../../Resources.js";
 import { Animations } from "../../Animations.js";
 import { FrameIndexPattern } from "../../FrameIndexPattern.js";
 import {
+    PICK_UP_DOWN,
     STAND_DOWN,
     STAND_LEFT,
     STAND_RIGHT,
@@ -18,6 +19,7 @@ import {
     WALK_UP
 } from "./heroAnimations.js";
 import { moveTowards } from "../../helpers/moveTowards.js";
+import { events } from "../../Events.js";
 
 export class Hero extends GameObject
 {
@@ -50,16 +52,29 @@ export class Hero extends GameObject
                 standUp: new FrameIndexPattern(STAND_UP),
                 standLeft: new FrameIndexPattern(STAND_LEFT),
                 standRight: new FrameIndexPattern(STAND_RIGHT),
+                pickUpDown: new FrameIndexPattern(PICK_UP_DOWN)
             })
         })
         this.addChild(this.body)
 
         this.facingDirection = DOWN
         this.destinationPosition = this.position.duplicate()
+        this.itemPickupTime = 0
+        this.itemPickupShell = null
+
+        events.on('HERO_PICK_UP_ITEM', this, data => {
+            this.onPickUpItem(data)
+        })
     }
 
     step(delta, root)
     {
+        if (this.itemPickupTime > 0) {
+            this.workOnItemPickup(delta)
+
+            return null
+        }
+
         // Двигаем персонажа к целевой позиции
         const distance = moveTowards(this, this.destinationPosition, 1)
 
@@ -70,6 +85,19 @@ export class Hero extends GameObject
         if (hasArrived) {
             this.tryMove(root)
         }
+
+        this.tryEmitPosition()
+    }
+
+    tryEmitPosition() {
+        if (this.lastX  == this.position.x && this.lastY == this.position.y) {
+            return
+        }
+
+        this.lastX = this.position.x
+        this.lastY = this.position.y
+
+        events.emit('HERO_POSITION', this.position)
     }
 
     tryMove(root)
@@ -128,6 +156,34 @@ export class Hero extends GameObject
         if (isSpaceFree(walls, nextX, nextY)) {
             this.destinationPosition.x = nextX
             this.destinationPosition.y = nextY
+        }
+    }
+
+    onPickUpItem({
+        image,
+        position
+    }) {
+        this.destinationPosition = position.duplicate()
+
+        this.itemPickupTime = 500
+
+        this.itemPickupShell = new GameObject({})
+        this.itemPickupShell.addChild(new Sprite({
+            resource: image,
+            position: new Vector2(0, -18)
+        }))
+
+        this.addChild(this.itemPickupShell)
+    }
+
+    workOnItemPickup(delta)
+    {
+        this.itemPickupTime -= delta
+
+        this.body.animations.play('pickUpDown')
+
+        if (this.itemPickupTime <= 0) {
+            this.itemPickupShell.destroy()
         }
     }
 }
