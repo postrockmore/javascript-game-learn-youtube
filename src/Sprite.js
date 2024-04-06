@@ -1,9 +1,10 @@
 import { Vector2 } from "./Vector2.js";
+import { GameObject } from "./GameObject.js";
 
 /*
  * Класс для работы с спрайтами
  */
-export class Sprite
+export class Sprite extends GameObject
 {
     // Принимаем объект с настройками
     constructor( {
@@ -17,6 +18,10 @@ export class Sprite
         animations, // Объекты анимаций
     } )
     {
+        super({
+
+        })
+
         this.resource = resource
         this.frameSize = frameSize || new Vector2(16, 16)
         this.hFrames = hFrames || 1
