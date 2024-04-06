@@ -9,6 +9,7 @@ import { GameObject } from "./src/GameObject.js";
 import { Hero } from "./src/objects/Hero/Hero.js";
 import { Camera } from "./src/Camera.js";
 import { Rod } from "./src/objects/Rod/Rod.js";
+import { Inventory } from "./src/objects/Inventory/Inventory.js";
 
 // Берем canvas на котором будем рисовать
 const canvas = document.querySelector('#game-canvas')
@@ -37,8 +38,12 @@ mainScene.addChild(groundSprite)
 const hero = new Hero(gridCells(6), gridCells(5))
 mainScene.addChild(hero)
 
+// Предмет
 const rod = new Rod(gridCells(7), gridCells(6))
 mainScene.addChild(rod)
+
+// Инвентарь
+const inventory = new Inventory()
 
 // Камера
 const camera = new Camera()
@@ -77,6 +82,9 @@ const draw = () =>
 
     // Восстанавливаем позицию отображения
     ctx.restore()
+
+    // Отображаем инвентарь
+    inventory.draw(ctx, 0, 0)
 }
 
 // Игровой цикл воздействующий на функции update и draw
