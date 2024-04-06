@@ -12,7 +12,7 @@ export class Rod extends GameObject
     constructor( x, y )
     {
         super({
-            position: new  Vector2(x, y)
+            position: new Vector2(x, y)
         });
 
         this.sprite = new Sprite({
@@ -20,8 +20,12 @@ export class Rod extends GameObject
             position: new Vector2(0, -5),
         })
         this.addChild(this.sprite)
+    }
 
-        events.on('HERO_POSITION', this, position => {
+    ready()
+    {
+        events.on('HERO_POSITION', this, position =>
+        {
             const roundedPosX = Math.round(position.x)
             const roundedPosY = Math.round(position.y)
 
@@ -32,7 +36,8 @@ export class Rod extends GameObject
     }
 
     // Метод который вызовется если мы столкнулись с этим предметом
-    onCollideWithHero() {
+    onCollideWithHero()
+    {
         this.destroy()
 
         events.emit('HERO_PICK_UP_ITEM', {

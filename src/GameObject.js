@@ -14,6 +14,7 @@ export class GameObject
         this.position = position || new Vector2(0, 0) // Позиция объекта в игре
         this.children = [] // Тут будут находится дочерние объекты
         this.parent = null // Тут будет хранится родительский элемент
+        this.hasReadyBeenCalled = false // Флаг о том что метод ready был вызван
     }
 
     /* Метод шага который запускает такие же функции для всех дочерних объектов
@@ -23,7 +24,20 @@ export class GameObject
     {
         this.children.forEach(child => child.stepEntry(delta, root))
 
+        if (!this.hasReadyBeenCalled) {
+            this.hasReadyBeenCalled = true
+            this.ready()
+        }
+
         this.step(delta, root)
+    }
+
+    /* Метод который будет вызываться один раз при создании объекта по готовности
+     * без реализации, реализация будет в классах-наследниках
+     */
+    ready()
+    {
+
     }
 
     /* Метод игрового цикла без реализации, реализация будет в классах-наследниках
