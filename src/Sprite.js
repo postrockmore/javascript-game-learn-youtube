@@ -14,6 +14,7 @@ export class Sprite
         frame, // Номер кадра по умолчанию
         scale, // Масштаб изображения
         position, // Начало координат
+        animations, // Объекты анимаций
     } )
     {
         this.resource = resource
@@ -24,6 +25,7 @@ export class Sprite
         this.frameMap = new Map() // Создаем пустую коллекцию кадров
         this.scale = scale || 1
         this.position = position || new Vector2(0, 0)
+        this.animations = animations || null
 
         this.buildFrameMap()
     }
@@ -51,6 +53,19 @@ export class Sprite
                 frameCount += 1
             }
         }
+    }
+
+    // Метод который запускает анимацию для спрайта
+    step(delta) {
+        if (!this.animations) {
+            return null;
+        }
+
+        // Расчитаем время анимации
+        this.animations.step(delta)
+
+        // Установим кадр для спрайта из расчетов нужного кадра анимации
+        this.frame = this.animations.frame
     }
 
     /* Отрисовка спрайта
