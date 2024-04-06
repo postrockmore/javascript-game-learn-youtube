@@ -7,6 +7,7 @@ import { Input } from "./src/Input.js";
 import { gridCells, } from "./src/helpers/grid.js";
 import { GameObject } from "./src/GameObject.js";
 import { Hero } from "./src/objects/Hero/Hero.js";
+import { events } from "./src/Events.js";
 
 
 // Берем canvas на котором будем рисовать
@@ -36,6 +37,10 @@ mainScene.addChild(groundSprite)
 // Герой
 const hero = new Hero(gridCells(6), gridCells(5))
 mainScene.addChild(hero)
+
+events.on('HERO_POSITION', mainScene, heroPosition => {
+
+})
 
 // Добавляем в главную сцену наш ввод
 mainScene.input = new Input()
