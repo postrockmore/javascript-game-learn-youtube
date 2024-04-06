@@ -47,6 +47,20 @@ const makeStandingFrames = (rootFrame = 0) => {
     }
 }
 
+/* Анимация поднятия предмета
+ */
+const makePickUpFrames = (rootFrame = 0) => {
+    return {
+        duration: 100,
+        frames: [
+            {
+                time: 0,
+                frame: rootFrame,
+            }
+        ]
+    }
+}
+
 /* Константы которые будут хранить наши объекты анимации
  * Для дальнейшего использования
  * Мы меняем только наш корневой кадр и функция уже сама выберет остальные
@@ -60,3 +74,5 @@ export const STAND_DOWN = makeStandingFrames(1)
 export const STAND_RIGHT = makeStandingFrames(4)
 export const STAND_UP = makeStandingFrames(7)
 export const STAND_LEFT = makeStandingFrames(10)
+
+export const PICK_UP_DOWN = makePickUpFrames(12)
